@@ -1,25 +1,20 @@
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
+import javax.swing.text.MaskFormatter;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+
 public class Main extends JFrame implements ActionListener {
 	//Definindo algumas "Variaveis"
 	private JPanel quadroAluno;
 	private JPanel quadroInicio;
-	private JTextField matricula;
-	private int valor_matricula;
+	private JFormattedTextField matricula;
+	Aluno a;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -34,13 +29,25 @@ public class Main extends JFrame implements ActionListener {
 		});
 	}
 
-	public Main() {
+	private Main() {
 		//ActionListener listener_aluno;
 		//listener_aluno = new Aluno();
+
+		addAluno(new Aluno(new Treino[2], "Caio", "00000001"));
+		a.setTreino(0, new Treino('A', new Exercicio[]{
+				new Exercicio("Agachamento",5,5),
+				new Exercicio("Supino Reto", 5,5),
+				new Exercicio("Remada Curvada",5,5)}));
+		a.setTreino(1,new Treino('B', new Exercicio[]{
+				new Exercicio("Agachamento",5,5),
+				new Exercicio("Desenvolvimento",5,5),
+				new Exercicio("Levantamento Terra",5,5)}));
+
+		//PAREI AQUI
+		System.out.println(a.getTreinos());
 		
 		//Definindo confgurações JFrame
-		
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setBounds(100, 100, 800, 700);
 		
 		//Quadro Inicio
@@ -60,10 +67,10 @@ public class Main extends JFrame implements ActionListener {
 		
 	}
 //DEFININDO GUI INICIAL
-	 void inicio(JPanel inicio_quadro) {
+	 private void inicio(JPanel inicio_quadro) {
 		JLabel panel = new JLabel();
-		Image img = new ImageIcon (this.getClass().getResource("/login.png")).getImage();
-		panel.setIcon(new ImageIcon(img));
+		//Image img = new ImageIcon (this.getClass().getResource("/login.png")).getImage();
+		//panel.setIcon(new ImageIcon(img));
 		panel.setBounds(268, 119, 263, 237);
 		quadroInicio.add(panel);
 		
@@ -72,20 +79,30 @@ public class Main extends JFrame implements ActionListener {
 		lblMatricula.setBounds(259, 444, 123, 30);
 		quadroInicio.add(lblMatricula);
 		
-		matricula = new JTextField();
+		matricula = new JFormattedTextField(mask("########"));
 		matricula.setBounds(364, 444, 197, 36);
 		quadroInicio.add(matricula);
 		matricula.setColumns(8);
-		
+
 		JButton btnBuscar = new JButton("Buscar");
 		btnBuscar.setBounds(326, 516, 140, 50);
 		quadroInicio.add(btnBuscar);
 		btnBuscar.setActionCommand("BUSCAR");
-		btnBuscar.addActionListener((ActionListener) this);
+		btnBuscar.addActionListener(this);
+	}
+
+	private MaskFormatter mask(String m){
+		MaskFormatter f = null;
+		try{
+			f = new MaskFormatter(m);
+			f.setValidCharacters("1234567890");
+		} catch(java.text.ParseException e){System.err.println("formatter is bad: " +  e.getMessage()); System.exit(-1);}
+
+		return f;
 	}
 
 //Definindo GUI ALUNO
-	 void pagina_Aluno(JPanel aluno_quadro) {
+	 private void pagina_Aluno(JPanel aluno_quadro) {
 		    JLabel lblNome = new JLabel("Nome:");
 			lblNome.setBounds(61, 26, 46, 16);
 			aluno_quadro.add(lblNome);
@@ -110,27 +127,23 @@ public class Main extends JFrame implements ActionListener {
 			btnVoltar.setBounds(349, 626, 117, 29);
 			aluno_quadro.add(btnVoltar);
 			btnVoltar.setActionCommand("VOLTAR");
-			btnVoltar.addActionListener((ActionListener) this);
+			btnVoltar.addActionListener(this);
+		}
+
+		void addAluno(Aluno a){
+		this.a = a;
 		}
 	 
 	 public void actionPerformed(ActionEvent e){
 		 String cmd = e.getActionCommand();
-		
-		 if (cmd.equals("BUSCAR")) { 	 
-			 try {
-				  valor_matricula=Integer.parseInt(matricula.getText());
-			      System.out.println("Integer is: "+valor_matricula);
-			      	 setContentPane(quadroAluno);
-					 invalidate();
-					 validate();
-					 this.pagina_Aluno(quadroAluno);
-				}
-				catch(NumberFormatException ex)
-				{
-					ex.printStackTrace();
-			
-				}
-		     }
+
+		 if (cmd.equals("BUSCAR")) {
+			 matricula.getText();
+			 setContentPane(quadroAluno);
+			 invalidate();
+			 validate();
+			 this.pagina_Aluno(quadroAluno);
+		 }
 		 else if (cmd.equals("VOLTAR")) {
 			 setContentPane(quadroInicio);
 			 invalidate();

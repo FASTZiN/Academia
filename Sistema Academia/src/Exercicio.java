@@ -1,18 +1,29 @@
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 
 public class Exercicio {
- private String nomeExerc;
- private int series;
- private int repeticoes;
-	
-     Exercicio(String nomeExerc, int series, int repeticoes){
-		this.nomeExerc = nomeExerc;
+ 	private String nome;
+ 	private int series;
+	private int repeticoes;
+
+	public Exercicio(String nome, int series, int repeticoes) {
+		this.nome = nome;
 		this.series = series;
-		this.repeticoes = repeticoes;		
+		this.repeticoes = repeticoes;
 	}
-	void imprimir(){
-		System.out.println("Exercicio:"+ nomeExerc +" Series: "+ series +" Rep:"+ repeticoes);
+
+	void imprimir() {
+		System.out.println("Exercicio: " + nome + " Series: " + series + " Rep: " + repeticoes);
+	}
+
+	String getNome(){
+     	return nome;
+	}
+
+	int getSeries(){
+		return series;
+	}
+
+	int getRepeticoes(){
+		return repeticoes;
 	}
 		
 }
