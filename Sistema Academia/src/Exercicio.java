@@ -1,29 +1,17 @@
 
 public class Exercicio {
  	private String nome;
- 	private int series;
-	private int repeticoes;
+ 	private String series;
+	private String repeticoes;
 
-	public Exercicio(String nome, int series, int repeticoes) {
+	public Exercicio(String nome, String series, String repeticoes) {
 		this.nome = nome;
 		this.series = series;
 		this.repeticoes = repeticoes;
 	}
 
-	void imprimir() {
-		System.out.println("Exercicio: " + nome + " Series: " + series + " Rep: " + repeticoes);
-	}
-
-	String getNome(){
-     	return nome;
-	}
-
-	int getSeries(){
-		return series;
-	}
-
-	int getRepeticoes(){
-		return repeticoes;
+	public String imprimir() {
+		return "Exercicio: " + nome + "\nSeries: " + series + "\nReps: " + repeticoes + "\n################";
 	}
 		
 }

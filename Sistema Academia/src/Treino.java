@@ -9,9 +9,4 @@ public class Treino{
         this.exercicios = exercicios;
         this.c = c;
     }
-
-    public Exercicio[] getExercicios(){
-        return exercicios;
-    }
-
-}
+ }
