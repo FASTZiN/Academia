@@ -8,16 +8,22 @@ import java.awt.GridBagConstraints;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 
 
 public class Main extends JFrame implements ActionListener {
 	//Definindo algumas "Variaveis"
 	private JPanel quadroAluno;
 	private JPanel quadroInicio;
+	private JPanel quadroProf;
+	private JPanel senhaProf;
 	private JFormattedTextField matricula;
-	Aluno a;
-	JTextArea textArea;
-	JScrollPane scrollPane;
+	private JPasswordField senha;
+	private Aluno a;
+	private JTextArea textArea;
+	private JScrollPane scrollPane;
+	private int width = 800;
+	private int height = 700;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -34,7 +40,7 @@ public class Main extends JFrame implements ActionListener {
 
 	private Main() {
 
-		addAluno(new Aluno(new Treino[2], "Caio", "00000001"));
+		a = new Aluno(new Treino[2], "Caio", "00000001");
 		a.setTreino(0, new Treino('A', new Exercicio[]{
 				new Exercicio("Agachamento", "5", "5"),
 				new Exercicio("Supino Reto", "5", "5"),
@@ -47,7 +53,7 @@ public class Main extends JFrame implements ActionListener {
 
 		//Definindo confgurações JFrame
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		setBounds(100, 100, 800, 700);
+		setBounds(100, 100, width, height);
 
 		//Quadro Inicio
 		quadroInicio = new JPanel();
@@ -56,14 +62,37 @@ public class Main extends JFrame implements ActionListener {
 		setContentPane(quadroInicio);
 
 		//Quadro Aluno
-
 		quadroAluno = new JPanel();
 		quadroAluno.setBorder(new EmptyBorder(5, 5, 5, 5));
 		quadroAluno.setLayout(null);
 
+		//Quadro Professor
+		quadroProf = new JPanel();
+		quadroProf.setBorder(new EmptyBorder(5,5,5,5));
+		quadroProf.setLayout(null);
+
+		//Quadro Senha
+		senhaProf = new JPanel();
+		senhaProf.setBorder(new EmptyBorder(5,5,5,5));
+		senhaProf.setLayout(null);
+
+
 		//Inicializando
 		inicio(quadroInicio);
 
+	}
+
+	private MaskFormatter mask() {
+		MaskFormatter f = null;
+		try {
+			f = new MaskFormatter("########");
+			f.setValidCharacters("1234567890");
+		} catch (java.text.ParseException e) {
+			System.err.println("formatter is bad: " + e.getMessage());
+			System.exit(-1);
+		}
+
+		return f;
 	}
 
 	//DEFININDO GUI INICIAL
@@ -79,7 +108,7 @@ public class Main extends JFrame implements ActionListener {
 		lblMatricula.setBounds(259, 444, 123, 30);
 		quadroInicio.add(lblMatricula);
 
-		matricula = new JFormattedTextField(mask("########"));
+		matricula = new JFormattedTextField(mask());
 		matricula.setBounds(364, 444, 197, 36);
 		quadroInicio.add(matricula);
 		matricula.setColumns(8);
@@ -89,20 +118,14 @@ public class Main extends JFrame implements ActionListener {
 		quadroInicio.add(btnBuscar);
 		btnBuscar.setActionCommand("BUSCAR");
 		btnBuscar.addActionListener(this);
+
+		JButton adminBtn = new JButton("Admin");
+		adminBtn.setBounds(width/1000,height/1000,70,20);
+		quadroInicio.add(adminBtn);
+		adminBtn.setActionCommand("Admin");
+		adminBtn.addActionListener(this);
 	}
 
-	private MaskFormatter mask(String m) {
-		MaskFormatter f = null;
-		try {
-			f = new MaskFormatter(m);
-			f.setValidCharacters("1234567890");
-		} catch (java.text.ParseException e) {
-			System.err.println("formatter is bad: " + e.getMessage());
-			System.exit(-1);
-		}
-
-		return f;
-	}
 
 	//Definindo GUI ALUNO
 	private void pagina_Aluno(JPanel aluno_quadro) {
@@ -141,13 +164,65 @@ public class Main extends JFrame implements ActionListener {
 		textArea.setEditable(false);
 		scrollPane = new JScrollPane(textArea);
 		textArea.setBounds(150, 200, 500, 400);
-		//textArea.append("");
 		aluno_quadro.add(textArea);
 		aluno_quadro.add(scrollPane);
 	}
 
-	void addAluno(Aluno a) {
-		this.a = a;
+	//GUI Senha Prof
+	private void senhaProf(JPanel senhaProf){
+		JLabel lblSenha = new JLabel("Senha: ");
+		lblSenha.setBounds(width/2-150,height/2,200,30);
+		senhaProf.add(lblSenha);
+
+		this.senha = new JPasswordField();
+		senha.setBounds(width/2-100,height/2,200,30);
+		senhaProf.add(senha);
+
+		JButton btnSenha = new JButton("Enter");
+		btnSenha.setBounds(width/2+100,height/2,100,30);
+		senhaProf.add(btnSenha);
+		btnSenha.setActionCommand("Enter");
+		btnSenha.addActionListener(this);
+
+		JButton btnVoltar = new JButton("Voltar");
+		btnVoltar.setBounds(349, 626, 117, 29);
+		senhaProf.add(btnVoltar);
+		btnVoltar.setActionCommand("VOLTAR");
+		btnVoltar.addActionListener(this);
+
+	}
+
+
+	//Definindo GUI PROF
+	private void paginaProf(JPanel quadroProf) {
+		JLabel lblNome = new JLabel("Nome: ");
+		lblNome.setBounds(61, 26, 100, 16);
+		quadroProf.add(lblNome);
+
+		JTextField nome = new JTextField();
+		nome.setBounds(150,28,100,16);
+		quadroProf.add(nome);
+
+		JLabel lblMatricula = new JLabel("Matricula: ");
+		lblMatricula.setBounds(61, 67, 200, 16);
+		quadroProf.add(lblMatricula);
+
+		JTextField txtMatricula = new JTextField();
+		txtMatricula.setBounds(150,70,100,16);
+		quadroProf.add(txtMatricula);
+
+		JButton addAluno = new JButton("Add Aluno");
+		addAluno.setBounds(100,150,100,30);
+		quadroProf.add(addAluno);
+		addAluno.setActionCommand("Add Aluno");
+		addAluno.addActionListener(this);
+
+
+		JButton btnVoltar = new JButton("Voltar");
+		btnVoltar.setBounds(349, 626, 117, 29);
+		quadroProf.add(btnVoltar);
+		btnVoltar.setActionCommand("VOLTAR");
+		btnVoltar.addActionListener(this);
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -177,6 +252,27 @@ public class Main extends JFrame implements ActionListener {
 			textArea.setText(a.getTreino(1));
 		}
 
+		else if(cmd.equals("Admin")){
+			setContentPane(senhaProf);
+			invalidate();
+			validate();
+			this.senhaProf(senhaProf);
+		}
+
+		else if(cmd.equals("Enter")){
+			char[] input = senha.getPassword();
+			if(isPasswordCorrect(input)) {
+				setContentPane(quadroProf);
+				invalidate();
+				validate();
+				this.paginaProf(quadroProf);
+			}
+		}
+
+		else if(cmd.equals("Add Aluno")){
+
+		}
+
 		else if (cmd.equals("VOLTAR")) {
 			setContentPane(quadroInicio);
 			invalidate();
@@ -184,6 +280,22 @@ public class Main extends JFrame implements ActionListener {
 			this.inicio(quadroInicio);
 		}
 
+	}
+
+	private static boolean isPasswordCorrect(char[] input) {
+		boolean isCorrect = true;
+		char[] correctPassword = { 'a', 'b', 'c', 'd', '1', '2', '3', '4' };
+
+		if (input.length != correctPassword.length) {
+			isCorrect = false;
+		} else {
+			isCorrect = Arrays.equals (input, correctPassword);
+		}
+
+		//Zero out the password.
+		Arrays.fill(correctPassword,'0');
+
+		return isCorrect;
 	}
 
 }
