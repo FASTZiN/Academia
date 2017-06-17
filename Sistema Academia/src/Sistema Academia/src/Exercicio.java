@@ -1,16 +1,19 @@
+
 public class Exercicio {
  	private String nome;
  	private String series;
 	private String repeticoes;
-
-	public Exercicio(String nome, String series, String repeticoes) {
-		this.nome = nome;
-		this.series = series;
-		this.repeticoes = repeticoes;
+	
+	
+	Exercicio(String x_nome, String x_series, String x_repeticoes) {
+		this.nome = x_nome;
+		this.series = x_series;
+		this.repeticoes = x_repeticoes;
 	}
 
-	public String imprimir() {
-		return "Exercicio: " + nome + "\nSeries: " + series + "\nReps: " + repeticoes + "\n################";
+	public void imprimir(GerenciadorExs ge) {
+		ge.imprimirExs(nome, series, repeticoes);
 	}
+
 		
 }
