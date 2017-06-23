@@ -1,4 +1,5 @@
 import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.EventQueue;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -17,13 +18,21 @@ public class Main extends JFrame implements ActionListener {
 	private JPanel quadroInicio;
 	private JPanel quadroProf;
 	private JPanel senhaProf;
-	private JFormattedTextField matricula;
+	private JPanel quadroAddAluno;
+	private JPanel quadroRemoveAluno;
+	private JLabel lblNome = new JLabel();
+	private JLabel lblMatricula = new JLabel();
+	private JFormattedTextField matricula, addNome, addSobrenome,removeMatricula;
 	private JPasswordField senha;
 	private Aluno a;
 	private JTextArea textArea;
 	private JScrollPane scrollPane;
 	private int width = 800;
 	private int height = 700;
+	private String x = null;
+	private ImprimirExs imprimir;
+	private Professor prof = new Professor();
+	private char[] input = {'0','0','0','0'};
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -39,21 +48,20 @@ public class Main extends JFrame implements ActionListener {
 	}
 
 	private Main() {
-
-		a = new Aluno(new Treino[2], "Caio", "00000001");
-		a.setTreino(0, new Treino('A', new Exercicio[]{
-				new Exercicio("Agachamento", "5", "5"),
-				new Exercicio("Supino Reto", "5", "5"),
-				new Exercicio("Remada Curvada", "5", "5")}));
-		a.setTreino(1, new Treino('B', new Exercicio[]{
+		Treino[] treino_teste = new Treino[2];
+		treino_teste[0] = new Treino(new Exercicio[]{
 				new Exercicio("Agachamento", "5", "5"),
 				new Exercicio("Desenvolvimento", "5", "5"),
-				new Exercicio("Levantamento Terra", "5", "5")}));
-
+				new Exercicio("Levantamento Terra", "5", "5")});
+		treino_teste[1] = new Treino (new Exercicio[]{
+				new Exercicio("Agachamento", "5", "5"),
+				new Exercicio("Supino Reto", "5", "5"),
+				new Exercicio("Remada Curvada", "5", "5")});
+		a = new Aluno("Caio",treino_teste, "00000001");
 
 		//Definindo confgurações JFrame
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		setBounds(100, 100, width, height);
+		setBounds(100, 100, 800, 700);
 
 		//Quadro Inicio
 		quadroInicio = new JPanel();
@@ -62,10 +70,11 @@ public class Main extends JFrame implements ActionListener {
 		setContentPane(quadroInicio);
 
 		//Quadro Aluno
+
 		quadroAluno = new JPanel();
 		quadroAluno.setBorder(new EmptyBorder(5, 5, 5, 5));
 		quadroAluno.setLayout(null);
-
+		
 		//Quadro Professor
 		quadroProf = new JPanel();
 		quadroProf.setBorder(new EmptyBorder(5,5,5,5));
@@ -75,11 +84,54 @@ public class Main extends JFrame implements ActionListener {
 		senhaProf = new JPanel();
 		senhaProf.setBorder(new EmptyBorder(5,5,5,5));
 		senhaProf.setLayout(null);
-
-
+		
+		//Quadro Add Aluno
+		
+		quadroAddAluno = new JPanel();
+		quadroAddAluno.setBorder(new EmptyBorder(5,5,5,5));
+		quadroAddAluno.setLayout(null);
+		
+		//Quadro Remove Aluo
+		
+		quadroRemoveAluno = new JPanel();
+		quadroRemoveAluno.setBorder(new EmptyBorder(5,5,5,5));
+		quadroRemoveAluno.setLayout(null);
 		//Inicializando
 		inicio(quadroInicio);
 
+	}
+
+	//DEFININDO GUI INICIAL
+	private void inicio(JPanel inicio_quadro) {
+		JLabel panel = new JLabel();
+		Image img = new ImageIcon (this.getClass().getResource("/login.png")).getImage();
+		panel.setIcon(new ImageIcon(img));
+		panel.setBounds(268, 119, 263, 237);
+		quadroInicio.add(panel);
+
+		JLabel lblMatricula = new JLabel("Matricula:");
+		lblMatricula.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
+		lblMatricula.setBounds(259, 444, 123, 30);
+		quadroInicio.add(lblMatricula);
+
+		
+		matricula = new JFormattedTextField(mask());
+		matricula.setBounds(364, 444, 197, 36);
+		matricula.setText(null);
+		quadroInicio.add(matricula);
+		matricula.setColumns(8);
+
+		JButton btnBuscar = new JButton("Buscar");
+		btnBuscar.setBounds(326, 516, 140, 50);
+		quadroInicio.add(btnBuscar);
+		btnBuscar.setActionCommand("BUSCAR");
+		btnBuscar.addActionListener(this);
+		
+		JButton adminBtn = new JButton("Admin");
+		adminBtn.setBounds(width/1000,height/1000,70,20);
+		quadroInicio.add(adminBtn);
+		adminBtn.setActionCommand("Admin");
+		adminBtn.addActionListener(this);
 	}
 
 	private MaskFormatter mask() {
@@ -94,48 +146,23 @@ public class Main extends JFrame implements ActionListener {
 
 		return f;
 	}
-
-	//DEFININDO GUI INICIAL
-	private void inicio(JPanel inicio_quadro) {
-		JLabel panel = new JLabel();
-		///Image img = new ImageIcon (this.getClass().getResource("/login.png")).getImage();
-		//panel.setIcon(new ImageIcon(img));
-		panel.setBounds(268, 119, 263, 237);
-		quadroInicio.add(panel);
-
-		JLabel lblMatricula = new JLabel("Matricula:");
-		lblMatricula.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
-		lblMatricula.setBounds(259, 444, 123, 30);
-		quadroInicio.add(lblMatricula);
-
-		matricula = new JFormattedTextField(mask());
-		matricula.setBounds(364, 444, 197, 36);
-		quadroInicio.add(matricula);
-		matricula.setColumns(8);
-
-		JButton btnBuscar = new JButton("Buscar");
-		btnBuscar.setBounds(326, 516, 140, 50);
-		quadroInicio.add(btnBuscar);
-		btnBuscar.setActionCommand("BUSCAR");
-		btnBuscar.addActionListener(this);
-
-		JButton adminBtn = new JButton("Admin");
-		adminBtn.setBounds(width/1000,height/1000,70,20);
-		quadroInicio.add(adminBtn);
-		adminBtn.setActionCommand("Admin");
-		adminBtn.addActionListener(this);
+	//Resetando Valores
+	private void resetaAlgumasCoisas(){
+		lblNome.setText(null);
+		lblMatricula.setText(null);;
 	}
-
 
 	//Definindo GUI ALUNO
 	private void pagina_Aluno(JPanel aluno_quadro) {
-		JLabel lblNome = new JLabel("Nome: " + a.getNome());
+		//lblNome = new JLabel();
 		lblNome.setBounds(61, 26, 100, 16);
 		aluno_quadro.add(lblNome);
 
-		JLabel lblMatricula = new JLabel("Matricula: " + a.getMatriculaAluno());
+		//lblMatricula = new JLabel();
 		lblMatricula.setBounds(61, 67, 200, 16);
 		aluno_quadro.add(lblMatricula);
+		prof.imprimirDados(lblNome, lblMatricula);
+
 
 		JButton btnTreinoA = new JButton("Treino A");
 		btnTreinoA.setBounds(108, 132, 117, 29);
@@ -151,6 +178,7 @@ public class Main extends JFrame implements ActionListener {
 
 		JButton btnTreinoC = new JButton("Treino C");
 		btnTreinoC.setBounds(588, 132, 117, 29);
+		btnTreinoC.setActionCommand("Treino C");
 		aluno_quadro.add(btnTreinoC);
 
 		JButton btnVoltar = new JButton("Voltar");
@@ -166,136 +194,254 @@ public class Main extends JFrame implements ActionListener {
 		textArea.setBounds(150, 200, 500, 400);
 		aluno_quadro.add(textArea);
 		aluno_quadro.add(scrollPane);
-	}
 
+
+	}
+	
 	//GUI Senha Prof
-	private void senhaProf(JPanel senhaProf){
-		JLabel lblSenha = new JLabel("Senha: ");
-		lblSenha.setBounds(width/2-150,height/2,200,30);
-		senhaProf.add(lblSenha);
+		private void senhaProf(JPanel senhaProf){
+			JLabel panel = new JLabel();
+			Image img = new ImageIcon (this.getClass().getResource("/login.png")).getImage();
+			panel.setIcon(new ImageIcon(img));
+			panel.setBounds(268, 119, 263, 237);
+			senhaProf.add(panel);
+			
+			JLabel lblSenha = new JLabel("Senha: ");
+			lblSenha.setBounds(width/2-150,height/2,200,30);
+			senhaProf.add(lblSenha);
 
-		this.senha = new JPasswordField();
-		senha.setBounds(width/2-100,height/2,200,30);
-		senhaProf.add(senha);
+			this.senha = new JPasswordField();
+			senha.setBounds(width/2-100,height/2,200,30);
+			senhaProf.add(senha);
 
-		JButton btnSenha = new JButton("Enter");
-		btnSenha.setBounds(width/2+100,height/2,100,30);
-		senhaProf.add(btnSenha);
-		btnSenha.setActionCommand("Enter");
-		btnSenha.addActionListener(this);
+			JButton btnSenha = new JButton("Enter");
+			btnSenha.setBounds(width/2+100,height/2,100,30);
+			senhaProf.add(btnSenha);
+			btnSenha.setActionCommand("Enter");
+			btnSenha.addActionListener(this);
 
-		JButton btnVoltar = new JButton("Voltar");
-		btnVoltar.setBounds(349, 626, 117, 29);
-		senhaProf.add(btnVoltar);
-		btnVoltar.setActionCommand("VOLTAR");
-		btnVoltar.addActionListener(this);
-
-	}
-
-
-	//Definindo GUI PROF
-	private void paginaProf(JPanel quadroProf) {
-		JLabel lblNome = new JLabel("Nome: ");
-		lblNome.setBounds(61, 26, 100, 16);
-		quadroProf.add(lblNome);
-
-		JTextField nome = new JTextField();
-		nome.setBounds(150,28,100,16);
-		quadroProf.add(nome);
-
-		JLabel lblMatricula = new JLabel("Matricula: ");
-		lblMatricula.setBounds(61, 67, 200, 16);
-		quadroProf.add(lblMatricula);
-
-		JTextField txtMatricula = new JTextField();
-		txtMatricula.setBounds(150,70,100,16);
-		quadroProf.add(txtMatricula);
-
-		JButton addAluno = new JButton("Add Aluno");
-		addAluno.setBounds(100,150,100,30);
-		quadroProf.add(addAluno);
-		addAluno.setActionCommand("Add Aluno");
-		addAluno.addActionListener(this);
-
-
-		JButton btnVoltar = new JButton("Voltar");
-		btnVoltar.setBounds(349, 626, 117, 29);
-		quadroProf.add(btnVoltar);
-		btnVoltar.setActionCommand("VOLTAR");
-		btnVoltar.addActionListener(this);
-	}
-
-	public void actionPerformed(ActionEvent e) {
-		String cmd = e.getActionCommand();
-
-		if (cmd.equals("BUSCAR")) {
-			if (matricula.getText().equals(a.getMatriculaAluno())) {
-				setContentPane(quadroAluno);
-				invalidate();
-				validate();
-				this.pagina_Aluno(quadroAluno);
-			}
-			else{
-				JOptionPane.showMessageDialog(new JFrame(), "Aluno não matriculado!");
-			}
+			JButton btnVoltar = new JButton("Voltar");
+			btnVoltar.setBounds(349, 626, 117, 29);
+			senhaProf.add(btnVoltar);
+			btnVoltar.setActionCommand("VOLTAR");
+			btnVoltar.addActionListener(this);
 
 		}
 
+		//Definindo GUI PROF
+		private void paginaProf(JPanel quadroProf) {
+			JLabel lblAdministrador = new JLabel("ADMINISTRADOR");
+			lblAdministrador.setFont(new Font("Lucida Grande", Font.PLAIN, 30));
+			lblAdministrador.setBounds(261, 57, 257, 41);
+			quadroProf.add(lblAdministrador);
+			
+			JLabel lblSelecioneAOpao = new JLabel("SELECIONE A OPÇÃO DESEJADA A SEGUIR:");
+			lblSelecioneAOpao.setBounds(65, 226, 300, 16);
+			quadroProf.add(lblSelecioneAOpao);
+			
+			JButton btnAdiocionarAluno = new JButton("ADICIONAR ALUNO");
+			btnAdiocionarAluno.setBounds(129, 312, 185, 29);
+			btnAdiocionarAluno.setActionCommand("ADICIONAR ALUNO");
+			quadroProf.add(btnAdiocionarAluno);
+			btnAdiocionarAluno.addActionListener(this);
+			
+			JButton btnRemoverAluno = new JButton("REMOVER ALUNO");
+			btnRemoverAluno.setBounds(129, 435, 185, 29);
+			quadroProf.add(btnRemoverAluno);
+			btnRemoverAluno.setActionCommand("REMOVER ALUNO");
+			btnRemoverAluno.addActionListener(this);
+			
+			JButton btnCriarTreino = new JButton("CRIAR TREINO");
+			btnCriarTreino.setBounds(436, 312, 185, 29);
+			quadroProf.add(btnCriarTreino);
+			
+			JButton btnAlterarTreino = new JButton("ALTERAR TREINO");
+			btnAlterarTreino.setBounds(436, 435, 185, 29);
+			quadroProf.add(btnAlterarTreino);
+			
+			JButton btnListaDeAlunos = new JButton("LISTA DE ALUNOS");
+			btnListaDeAlunos.setBounds(289, 538, 185, 29);
+			quadroProf.add(btnListaDeAlunos);
+			
+			JButton btnVoltar = new JButton("Voltar");
+			btnVoltar.setBounds(349, 626, 117, 29);
+			quadroProf.add(btnVoltar);
+			btnVoltar.setActionCommand("VOLTAR");
+			btnVoltar.addActionListener(this);
+		}
+		
+		//Definindo GUI Add ALUNO
+		
+		private void paginaAddAluno(JPanel quadroAddAluno){
+			JLabel lblAdcionandoUmAluno = new JLabel("ADICIONANDO UM ALUNO");
+			lblAdcionandoUmAluno.setFont(new Font("Lucida Grande", Font.PLAIN, 26));
+			lblAdcionandoUmAluno.setBounds(215, 135, 334, 32);
+			quadroAddAluno.add(lblAdcionandoUmAluno);
+			
+			JLabel lblParaAdiconarUm = new JLabel("PARA ADICONAR UM ALUNO AO SISTEMA, BASTA COLOCAR O NOME, SOBRENOME DO NOVO ALUNO");
+			lblParaAdiconarUm.setBounds(73, 226, 648, 16);
+			quadroAddAluno.add(lblParaAdiconarUm);
+			
+			JLabel lblNome = new JLabel("NOME:");
+			lblNome.setBounds(138, 341, 61, 16);
+			quadroAddAluno.add(lblNome);
+			
+			addNome = new JFormattedTextField();
+			addNome.setBounds(187, 336, 477, 26);
+			quadroAddAluno.add(addNome);
+			addNome.setColumns(10);
+			
+			JLabel lblSobrenome = new JLabel("SOBRENOME:");
+			lblSobrenome.setBounds(138, 434, 81, 16);
+			quadroAddAluno.add(lblSobrenome);
+			
+			addSobrenome = new JFormattedTextField();
+			addSobrenome.setBounds(231, 429, 433, 26);
+			quadroAddAluno.add(addSobrenome);
+			addSobrenome.setColumns(10);
+			
+			JButton btnAdicionar = new JButton("ADICIONAR");
+			btnAdicionar.setBounds(336, 619, 117, 29);
+			quadroAddAluno.add(btnAdicionar);
+			btnAdicionar.setActionCommand("ADICIONAR");
+			btnAdicionar.addActionListener(this);
+			
+			JLabel lblAoClicarEm = new JLabel("AO CLICAR EM ADICIONAR, UMA MENSAGEM SERÁ EXIBIDA INFORMANDO SE O ALUNO FOI ADIOCIONADO COM SUCESSO");
+			lblAoClicarEm.setBounds(20, 531, 763, 32);
+			quadroAddAluno.add(lblAoClicarEm);
+		}
+	
+	//GUI REMOVE ALUNO
+		private void paginaRemoveAluno(){
+			JLabel lblRemoDeAluno = new JLabel("REMOÇÃO DE ALUNO DO SISTEMA");
+			lblRemoDeAluno.setFont(new Font("Lucida Grande", Font.PLAIN, 26));
+			lblRemoDeAluno.setBounds(176, 53, 441, 32);
+			quadroRemoveAluno.add(lblRemoDeAluno);
+			
+			JLabel lblParaRemoverO = new JLabel("PARA REMOVER O ALUNO, BASTA COLOCAR A SUA MATRICULA E CLICAR NO BOTÃO REMOVER.");
+			lblParaRemoverO.setBounds(104, 174, 602, 54);
+			quadroRemoveAluno.add(lblParaRemoverO);
+			
+			JLabel lblMatricula = new JLabel("MATRICULA:");
+			lblMatricula.setBounds(264, 374, 92, 16);
+			quadroRemoveAluno.add(lblMatricula);
+			
+			removeMatricula = new JFormattedTextField(this.mask());
+			removeMatricula.setBounds(368, 369, 130, 26);
+			quadroRemoveAluno.add(removeMatricula);
+			removeMatricula.setColumns(10);
+			
+			JButton btnRemover = new JButton("REMOVER");
+			btnRemover.setBounds(308, 534, 117, 29);
+			quadroRemoveAluno.add(btnRemover);
+			btnRemover.setActionCommand("REMOVER");
+			btnRemover.addActionListener(this);
+			
+			JButton btnVoltar = new JButton("VOLTAR");
+			btnVoltar.setBounds(308, 632, 117, 29);
+			quadroRemoveAluno.add(btnVoltar);
+			btnVoltar.setActionCommand("VOLTAR");
+			btnVoltar.addActionListener(this);
+			
+		}
+	public void actionPerformed(ActionEvent e) {
+		String cmd = e.getActionCommand();
+		//x = matricula.getText();
+		if(cmd.equals("BUSCAR")){
+			if(prof.matriculaExiste(matricula) == false){
+			JOptionPane.showMessageDialog(new JFrame(), "Aluno não matriculado!");
+			matricula.setText(null);}
+		else {
+			this.pagina_Aluno(quadroAluno);
+			setContentPane(quadroAluno);
+			invalidate();
+			validate();
+			prof.selecionaMatriculaSelecionada(matricula);
+			System.out.println(matricula.getText());
+		}
+	}
 		else if(cmd.equals("Treino A")){
 			textArea.setText(null);
-			textArea.setText(a.getTreino(0));
+			imprimir = new ImprimirExs(textArea);
+			a.imprimirTreinamento(0,imprimir);
 
 		}
 
 		else if(cmd.equals("Treino B")){
 			textArea.setText(null);
-			textArea.setText(a.getTreino(1));
+			imprimir = new ImprimirExs(textArea);
+			a.imprimirTreinamento(1, imprimir);
 		}
-
+		else if(cmd.equals("Treino C")){
+			textArea.setText(null);
+			imprimir = new ImprimirExs(textArea);
+			a.imprimirTreinamento(2, imprimir);
+		}
 		else if(cmd.equals("Admin")){
 			setContentPane(senhaProf);
 			invalidate();
 			validate();
 			this.senhaProf(senhaProf);
 		}
-
+		else if(cmd.equals("ADICIONAR ALUNO")){
+			setContentPane(quadroAddAluno);
+			invalidate();
+			validate();
+			this.paginaAddAluno(quadroAddAluno);
+		}
 		else if(cmd.equals("Enter")){
-			char[] input = senha.getPassword();
-			if(isPasswordCorrect(input)) {
+			//input = senha.getPassword();
+
+			if(prof.SenhaCorreta(senha)) {
 				setContentPane(quadroProf);
 				invalidate();
 				validate();
 				this.paginaProf(quadroProf);
+				System.out.println(senha.getPassword());
+				senha.setText(null);
+			} else{JOptionPane.showMessageDialog(new JPanel(),"SENHA ERRADA");
+				System.out.println(senha.getPassword());
 			}
-		}
-
-		else if(cmd.equals("Add Aluno")){
-
+			
 		}
 
 		else if (cmd.equals("VOLTAR")) {
 			setContentPane(quadroInicio);
 			invalidate();
 			validate();
-			this.inicio(quadroInicio);
+			this.resetaAlgumasCoisas();
+			matricula.setText(null);
+		}
+		else if(cmd.equals("ADICIONAR")){
+			prof.addAluno(addNome, addSobrenome);
+			setContentPane(quadroProf);
+			invalidate();
+			validate();
+			addNome.setText(null);
+			addSobrenome.setText(null);
+		}
+		else if(cmd.equals("REMOVER ALUNO")){
+			setContentPane(quadroRemoveAluno);
+			invalidate();
+			validate();
+			this.paginaRemoveAluno();
+			prof.imprimirAlunos();
+		}
+		else if(cmd.equals("REMOVER")){
+			if(prof.matriculaExiste(removeMatricula)){
+			prof.removeAluno(removeMatricula);
+			JOptionPane.showMessageDialog(new JFrame(), "Aluno removido do sistema");
+			prof.imprimirAlunos();
+			setContentPane(quadroProf);
+			invalidate();
+			validate();
+			removeMatricula.setText(null);
+			}else{
+				JOptionPane.showMessageDialog(new JFrame(), "Matricula não encontada");
+				removeMatricula.setText(null);
+			}
 		}
 
-	}
-
-	private static boolean isPasswordCorrect(char[] input) {
-		boolean isCorrect = true;
-		char[] correctPassword = { 'a', 'b', 'c', 'd', '1', '2', '3', '4' };
-
-		if (input.length != correctPassword.length) {
-			isCorrect = false;
-		} else {
-			isCorrect = Arrays.equals (input, correctPassword);
-		}
-
-		//Zero out the password.
-		Arrays.fill(correctPassword,'0');
-
-		return isCorrect;
 	}
 
 }
