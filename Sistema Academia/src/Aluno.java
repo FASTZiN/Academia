@@ -24,28 +24,23 @@ public class Aluno extends Pessoa{
     public void mostrarMatriculaAluno(JLabel r) {
         r.setText("Matricula: "+ matriculaAluno);
     }
-    
-    public void criarTreino(){
-    	
-    }
-    
-    public String getMatricula(){
-    	return matriculaAluno;
-    }
-    
-    public void imprimirNomeP(){
+
+    public String imprimirNomeP(){
     	System.out.println(nome + "/"+ matriculaAluno);
+    	return (nome + "/" + matriculaAluno + "\n");
     }
     
     public boolean verificarMatricula(String matricula){
     	boolean res = false;
-    	if (this.matriculaAluno.equals(matricula)){
-    		res = true;}
+    	if (this.matriculaAluno.equals(matricula))
+    		res = true;
+
     	return res;
     }
 	public void imprimirTreinamento(int x_treino,ImprimirExs ge){
 	treinos[x_treino].imprimirTreino(ge);
 	}
+
 	public void criarNovosExs(JFormattedTextField recebe_treino, GerenciadorNovaSerie gt, JFormattedTextField qtsExs, JFormattedTextField exs, JFormattedTextField serie, JFormattedTextField repeticoes){
 	int x_treino = Integer.parseInt(recebe_treino.getText());
 		treinos[x_treino].criarNovosExs(gt,qtsExs, exs, serie, repeticoes);	

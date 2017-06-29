@@ -23,6 +23,7 @@ public class Main extends JFrame implements ActionListener {
 	private JPanel quadroMatTreino;
 	private JPanel quadroselTreinoEExs;
 	private JPanel quadroAddExs;
+	private JPanel quadroListaDeAlunos;
 	private JLabel lblNome = new JLabel();
 	private JLabel lblMatricula = new JLabel();
 	private JComboBox comboBox;
@@ -38,6 +39,8 @@ public class Main extends JFrame implements ActionListener {
 	private char[] input = {'0','0','0','0'};
 	private String[] selecionaTreino = {"TREINO A", "TREINO B", "TREINO C"};
 
+	GUIAjuda g;
+
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -52,10 +55,9 @@ public class Main extends JFrame implements ActionListener {
 	}
 
 	private Main() {
-
 		//Definindo confgurações JFrame
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		setBounds(100, 100, 800, 700);
+		setBounds(0, 0, 800, 700);
 
 		//Quadro Inicio
 		quadroInicio = new JPanel();
@@ -105,6 +107,11 @@ public class Main extends JFrame implements ActionListener {
 		quadroAddExs = new JPanel();
 		quadroAddExs.setBorder(new EmptyBorder(5,5,5,5));
 		quadroAddExs.setLayout(null);
+
+		//Quadro ListaDeAlunos
+		quadroListaDeAlunos = new JPanel();
+		quadroListaDeAlunos.setBorder(new EmptyBorder(5,5,5,5));
+		quadroListaDeAlunos.setLayout(null);
 				
 		//Inicializando
 		inicio(quadroInicio);
@@ -113,11 +120,30 @@ public class Main extends JFrame implements ActionListener {
 
 	//DEFININDO GUI INICIAL
 	private void inicio(JPanel inicio_quadro) {
-		JLabel panel = new JLabel();
-		Image img = new ImageIcon (this.getClass().getResource("/login.png")).getImage();
-		panel.setIcon(new ImageIcon(img));
-		panel.setBounds(268, 119, 263, 237);
-		quadroInicio.add(panel);
+
+		try {
+			// Set cross-platform Java L&F (also called "Metal")
+			UIManager.setLookAndFeel(
+					UIManager.getSystemLookAndFeelClassName());
+		}
+		catch (UnsupportedLookAndFeelException e) {
+			// handle exception
+		}
+		catch (ClassNotFoundException e) {
+			// handle exception
+		}
+		catch (InstantiationException e) {
+			// handle exception
+		}
+		catch (IllegalAccessException e) {
+			// handle exception
+		}
+
+		//JLabel panel = new JLabel();
+//		Image img = new ImageIcon (this.getClass().getResource("/login.png")).getImage();
+		//panel.setIcon(new ImageIcon(img));
+		//panel.setBounds(268, 119, 263, 237);
+		//quadroInicio.add(panel);
 
 		JLabel lblMatricula = new JLabel("Matricula:");
 		lblMatricula.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
@@ -172,7 +198,7 @@ public class Main extends JFrame implements ActionListener {
 	//Resetando Valores
 	private void resetaAlgumasCoisas(){
 		lblNome.setText(null);
-		lblMatricula.setText(null);;
+		lblMatricula.setText(null);
 	}
 
 	//Definindo GUI ALUNO
@@ -186,6 +212,11 @@ public class Main extends JFrame implements ActionListener {
 		aluno_quadro.add(lblMatricula);
 		prof.imprimirDados(lblNome, lblMatricula);
 
+		JButton btnAjuda = new JButton("Ajuda");
+		btnAjuda.setBounds(width/999, height-63, 80, 25);
+		aluno_quadro.add(btnAjuda);
+		btnAjuda.setActionCommand("AJUDA");
+		btnAjuda.addActionListener(this);
 
 		JButton btnTreinoA = new JButton("Treino A");
 		btnTreinoA.setBounds(108, 132, 117, 29);
@@ -220,13 +251,30 @@ public class Main extends JFrame implements ActionListener {
 
 
 	}
+
+	//Definindo GUI ListaDeAlunos
+	private void listaDeAlunos(JPanel listaDeAlunos) {
+
+		JButton OKButton = new JButton("OK");
+		OKButton.setBounds((width/2)-40, height-100, 80, 20);
+		listaDeAlunos.add(OKButton);
+		OKButton.setActionCommand("OK");
+		OKButton.addActionListener(this);
+
+		JList list = new JList(prof.imprimirAlunos());
+		list.setBounds(0,0,width,height);
+		listaDeAlunos.add(list);
+
+
+
+	}
 	
 	//GUI Senha Prof
 		private void senhaProf(JPanel senhaProf){
 			JLabel panel = new JLabel();
-			Image img = new ImageIcon (this.getClass().getResource("/login.png")).getImage();
-			panel.setIcon(new ImageIcon(img));
-			panel.setBounds(268, 119, 263, 237);
+//			Image img = new ImageIcon (this.getClass().getResource("/login.png")).getImage();
+//			panel.setIcon(new ImageIcon(img));
+//			panel.setBounds(268, 119, 263, 237);
 			senhaProf.add(panel);
 			
 			JLabel lblSenha = new JLabel("Senha: ");
@@ -287,6 +335,8 @@ public class Main extends JFrame implements ActionListener {
 			JButton btnListaDeAlunos = new JButton("LISTA DE ALUNOS");
 			btnListaDeAlunos.setBounds(289, 538, 185, 29);
 			quadroProf.add(btnListaDeAlunos);
+			btnListaDeAlunos.setActionCommand("LISTA DE ALUNOS");
+			btnListaDeAlunos.addActionListener(this);
 			
 			JButton btnVoltar = new JButton("Voltar");
 			btnVoltar.setBounds(349, 626, 117, 29);
@@ -326,7 +376,7 @@ public class Main extends JFrame implements ActionListener {
 			addSobrenome.setColumns(10);
 			
 			JButton btnAdicionar = new JButton("ADICIONAR");
-			btnAdicionar.setBounds(336, 619, 117, 29);
+			btnAdicionar.setBounds(200, 500, 117, 29);
 			quadroAddAluno.add(btnAdicionar);
 			btnAdicionar.setActionCommand("ADICIONAR");
 			btnAdicionar.addActionListener(this);
@@ -334,6 +384,12 @@ public class Main extends JFrame implements ActionListener {
 			JLabel lblAoClicarEm = new JLabel("AO CLICAR EM ADICIONAR, UMA MENSAGEM SERÁ EXIBIDA INFORMANDO SE O ALUNO FOI ADIOCIONADO COM SUCESSO");
 			lblAoClicarEm.setBounds(20, 531, 763, 32);
 			quadroAddAluno.add(lblAoClicarEm);
+
+			JButton btnVoltar = new JButton("Voltar");
+			btnVoltar.setBounds(500, 500, 117, 29);
+			quadroAddAluno.add(btnVoltar);
+			btnVoltar.setActionCommand("VOLTAR");
+			btnVoltar.addActionListener(this);
 		}
 	
 	//GUI REMOVE ALUNO
@@ -394,13 +450,15 @@ public class Main extends JFrame implements ActionListener {
 		matTreino.setColumns(10);
 		
 		JButton btnAvancar = new JButton("AVANÇAR");
-		btnAvancar.setBounds(286, 463, 117, 29);
+		btnAvancar.setBounds(200, 500, 117, 29);
 		quadroMatTreino.add(btnAvancar);
 		btnAvancar.setActionCommand("AVANCAR SELECAO ");
 		btnAvancar.addActionListener(this);
 		
 		JButton btnVoltar = new JButton("VOLTAR");
-		btnVoltar.setBounds(286, 643, 117, 29);
+		btnVoltar.setBounds(500, 500, 117, 29);
+		btnVoltar.addActionListener(this);
+		btnVoltar.setActionCommand("VOLTAR");
 		quadroMatTreino.add(btnVoltar);
 	}
 	
@@ -430,13 +488,15 @@ public class Main extends JFrame implements ActionListener {
 		numeroExs.setColumns(1);
 		
 		JButton btnAvanar = new JButton("AVANÇAR");
-		btnAvanar.setBounds(316, 507, 117, 29);
+		btnAvanar.setBounds(200, 500, 117, 29);
 		quadroselTreinoEExs.add(btnAvanar);
 		btnAvanar.setActionCommand("AVANCAR ADD TREINO");
 		btnAvanar.addActionListener(this);
 		
 		JButton btnVoltar = new JButton("VOLTAR");
-		btnVoltar.setBounds(316, 643, 117, 29);
+		btnVoltar.setBounds(500, 500, 117, 29);
+		btnVoltar.setActionCommand("VOLTAR");
+		btnVoltar.addActionListener(this);
 		quadroselTreinoEExs.add(btnVoltar);
 	}
 	//GUI PAGINA ADD EXERCICIO
@@ -482,13 +542,13 @@ public class Main extends JFrame implements ActionListener {
 		quadroAddExs.add(lblNumeroDoExs);
 		
 		JButton btnAdd = new JButton("ADD");
-		btnAdd.setBounds(289, 500, 117, 29);
+		btnAdd.setBounds(200, 500, 117, 29);
 		quadroAddExs.add(btnAdd);
 		btnAdd.setActionCommand("ADD EXS");
 		btnAdd.addActionListener(this);
 		
 		JButton btnVoltar = new JButton("Voltar");
-		btnVoltar.setBounds(349, 626, 117, 29);
+		btnVoltar.setBounds(500, 500, 117, 29);
 		quadroAddExs.add(btnVoltar);
 		btnVoltar.setActionCommand("VOLTAR");
 		btnVoltar.addActionListener(this);
@@ -571,6 +631,7 @@ public class Main extends JFrame implements ActionListener {
 			validate();
 			addNome.setText(null);
 			addSobrenome.setText(null);
+			quadroAddAluno.removeAll();
 		}
 		else if(cmd.equals("REMOVER ALUNO")){
 			setContentPane(quadroRemoveAluno);
@@ -580,7 +641,6 @@ public class Main extends JFrame implements ActionListener {
 			prof.imprimirAlunos();
 		}
 		else if(cmd.equals("REMOVER")){
-			if(prof.matriculaExiste(removeMatricula)){
 			prof.removeAluno(removeMatricula);
 			JOptionPane.showMessageDialog(new JFrame(), "Aluno removido do sistema");
 			prof.imprimirAlunos();
@@ -588,11 +648,11 @@ public class Main extends JFrame implements ActionListener {
 			invalidate();
 			validate();
 			removeMatricula.setText(null);
-			}else{
+			if(!prof.matriculaExiste(removeMatricula)){
 				JOptionPane.showMessageDialog(new JFrame(), "Matricula não encontada");
 				removeMatricula.setText(null);
 			}
-		}
+		}//
 		else if(cmd.equals("CRIAR TREINO")){
 			setContentPane(quadroMatTreino);
 			invalidate();
@@ -613,6 +673,25 @@ public class Main extends JFrame implements ActionListener {
 		}
 		else if(cmd.equals("ADD EXS")){
 			prof.criarNovoExs(matTreino, selTreino, numeroExs, nomeExs, qntdSeries, qntdRepeticoes);
+		}
+
+		else if (cmd.equals("AJUDA")){
+			g = new GUIAjuda();
+			g.main(null);
+		}
+
+		else if (cmd.equals("LISTA DE ALUNOS")){
+			setContentPane(quadroListaDeAlunos);
+			invalidate();
+			validate();
+			this.listaDeAlunos(quadroListaDeAlunos);
+		}
+		else if (cmd.equals("OK")){
+			setContentPane(quadroProf);
+			invalidate();
+			validate();
+			this.paginaProf(quadroProf);
+			quadroListaDeAlunos.removeAll();
 		}
 
 	}

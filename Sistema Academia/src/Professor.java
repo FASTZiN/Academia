@@ -1,4 +1,5 @@
 import java.util.Arrays;
+import java.util.Random;
 
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
@@ -9,7 +10,7 @@ import javax.swing.JPasswordField;
 
 public class Professor {
 	private int mat_selecionada;
-	Aluno[] alunos = new Aluno[100000];
+	Aluno[] alunos = new Aluno[100];
     private int n;
     private Aluno x;
     
@@ -59,7 +60,7 @@ public class Professor {
     	//Isto aq d certo, mas ta errado!!!!!!!
     	//Aluno x = this.alunoPorMatricula(matricula);
     	for(int i = 0; i < n; i++){
-  		  if(this.matriculaExiste(matricula) == true){
+  		  if(this.matriculaExiste(matricula)){
   			   //x = alunos[i];
   			removeAluno(indexOf(alunos[i]));
   		  }
@@ -67,22 +68,29 @@ public class Professor {
         //removeAluno(indexOf());
       }
       private void removeAluno(int k) {
-        if (k < 0) return;
-        n = n - 1;
-        alunos[k] = alunos[n];
-        return;
+        if (k < 0)
+        	return;
+        else {
+			n = n - 1;
+			alunos[k] = alunos[n];
+			return;
+		}
       }
       private int indexOf(Aluno x) {
-        for(int i = 0; i < n; i++) {
-          if(alunos[i] == x) return i;
+        int res = -1;
+    	for(int i = 0; i < n; i++) {
+          if(alunos[i] == x)
+          	res = i;
         }
-        return -1;
+        return res;
       }
       
-       void imprimirAlunos(){
-    	   for(int i = 0; i < n;i++){
-    		   alunos[i].imprimirNomeP();
+       String[] imprimirAlunos(){
+    	String[] a = new String[n];
+    	for(int i = 0; i < n;i++){
+    		    a[i] = alunos[i].imprimirNomeP();
     	   }
+		   return a;
       }
        
 
@@ -90,9 +98,12 @@ public class Professor {
     	  String addNome, addSobrenome, addMatricula;
     	  addNome = nome.getText();
     	  addSobrenome = sobrenome.getText();
+		  Random mat = new Random();
+		  int n = 10000000 + mat.nextInt(90000000);
+		  String matricula = String.valueOf(n);
     	  
     	  
-    	  Aluno x = new Aluno(addNome,null,"000000004");  
+    	  Aluno x = new Aluno(addNome,null,matricula);
     	  return x;
       }
       
@@ -102,11 +113,7 @@ public class Professor {
     	  boolean isCorrect = true;
   		String correctPassword = "abcd1234";
 
-  		if (correctPassword.equals(c)) {
-  			isCorrect = true;
-  		} else {
-  			isCorrect = false;
-  		}
+          isCorrect = correctPassword.equals(c);
 
   		return isCorrect;
       }
