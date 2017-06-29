@@ -13,6 +13,7 @@ public class Professor {
 	Aluno[] alunos = new Aluno[100];
     private int n;
     private Aluno x;
+	int qtsExs = 100;
     
     criarNovaSerie eg = new criarNovaSerie();
     Professor(){
@@ -103,7 +104,7 @@ public class Professor {
 		  String matricula = String.valueOf(n);
     	  
     	  
-    	  Aluno x = new Aluno(addNome,null,matricula);
+    	  Aluno x = new Aluno(addNome,new Treino[]{new Treino(new Exercicio[qtsExs]), new Treino(new Exercicio[]{new Exercicio(null,null,null)}), new Treino(new Exercicio[]{new Exercicio(null,null,null)})},matricula);
     	  return x;
       }
       
@@ -140,9 +141,13 @@ public class Professor {
       }
       
       public void criarNovoExs(JFormattedTextField matricula, JFormattedTextField x_treino,JFormattedTextField qtsExs, JFormattedTextField exs, JFormattedTextField serie, JFormattedTextField repeticoes){
-  		  if(this.matriculaExiste(matricula) == true){
+  		selecionaMatriculaSelecionada(matricula);
+  		this.qtsExs = Integer.parseInt(qtsExs.getText());
+      	if(this.matriculaExiste(matricula) == true){
   			alunos[mat_selecionada].criarNovosExs(x_treino, eg, qtsExs, exs, serie, repeticoes);
       	  }
+      	  else
+		  	System.out.println("ERROR");
       }
       
       public void imprimirDados(JLabel i_nome, JLabel i_matricula ){

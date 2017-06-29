@@ -7,7 +7,7 @@ public class ImprimirExs implements GerenciadorExs {
 		this.i=i;
 	}
 	public void imprimirExs(String nome, String serie, String repeticao) {
-		i.append("Exercicio: " + nome + "\nSeries: " + serie + "\nReps: " + repeticao + "\n################");
+		i.append("Exercicio: " + nome + "\nSeries: " + serie + "\nReps: " + repeticao + "\n################" + "\n");
 		System.out.println("Exercicio: " + nome + "\nSeries: " + serie + "\nReps: " + repeticao + "\n################");
 	}
 }
